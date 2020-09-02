@@ -345,6 +345,7 @@ public class TestJobDownloadController extends PortalTestClass {
     /**
      * Test the method makeWcsUrl(...)
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testMakeWcsUrl() throws PortalServiceException {
         final String localsServiceUrl = "http://example.org/wfs";

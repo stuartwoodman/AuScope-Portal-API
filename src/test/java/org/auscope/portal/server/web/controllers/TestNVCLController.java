@@ -39,7 +39,6 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * @version: $Id$
  */
-@SuppressWarnings("rawtypes")
 public class TestNVCLController extends PortalTestClass {
 
     /** The mock http response. */
@@ -114,7 +113,7 @@ public class TestNVCLController extends PortalTestClass {
                 filterDateStart, filterDateEnd, maxFeatures, bbox, onlyHylogger, outputFormat, false,"");
         Assert.assertTrue((Boolean) response.getModel().get("success"));
 
-        Map data = (Map) response.getModel().get("data");
+        Map<?, ?> data = (Map) response.getModel().get("data");
         Assert.assertNotNull(data);
         Assert.assertEquals(nvclWfsResponse, data.get("gml"));
     }
@@ -160,7 +159,7 @@ public class TestNVCLController extends PortalTestClass {
                 filterDateStart, filterDateEnd, maxFeatures, bbox, onlyHylogger, outputFormat, false,"");
         Assert.assertTrue((Boolean) response.getModel().get("success"));
 
-        Map data = (Map) response.getModel().get("data");
+        Map<?, ?> data = (Map) response.getModel().get("data");
         Assert.assertNotNull(data);
         Assert.assertEquals(nvclWfsResponse, data.get("gml"));
     }

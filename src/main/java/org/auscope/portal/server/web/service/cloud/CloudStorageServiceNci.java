@@ -112,6 +112,7 @@ public class CloudStorageServiceNci extends CloudStorageService {
             channel = session.openChannel("sftp");
             channel.connect();
             ChannelSftp c = (ChannelSftp) channel;
+            @SuppressWarnings("unchecked")
             Vector<LsEntry> files = c.ls(fullPath);
             ArrayList<CloudFileInformation> res = new ArrayList<>(files.size());
             for (LsEntry entry : files) {
@@ -135,6 +136,7 @@ public class CloudStorageServiceNci extends CloudStorageService {
     }
 
     public void rmDirRecursive(Session session, ChannelSftp channel, String path) throws SftpException {
+        @SuppressWarnings("unchecked")
         Vector<LsEntry> files = channel.ls(path);
 
         for (LsEntry entry : files) {

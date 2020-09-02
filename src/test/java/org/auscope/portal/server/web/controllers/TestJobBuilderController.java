@@ -1079,7 +1079,6 @@ public class TestJobBuilderController {
      * Tests that listing job images for a user works as expected
      * @throws Exception
      */
-    @SuppressWarnings("rawtypes")
     @Test
     public void testListImages() throws Exception {
         final String computeServiceId = "compute-service-id";
@@ -1097,14 +1096,13 @@ public class TestJobBuilderController {
         Assert.assertNotNull(mav);
         Assert.assertTrue((Boolean)mav.getModel().get("success"));
         Assert.assertNotNull(mav.getModel().get("data"));
-        Assert.assertEquals(images.length, ((Set) mav.getModel().get("data")).size());
+        Assert.assertEquals(images.length, ((Set<?>) mav.getModel().get("data")).size());
     }
 
     /**
      * Tests that listing job images for a user works as expected when there is an image with no restrictions
      * @throws Exception
      */
-    @SuppressWarnings("rawtypes")
     @Test
     public void testListImages_NoRestrictions() throws Exception {
         final HashMap<String, Object> sessionVariables = new HashMap<String, Object>();

@@ -973,9 +973,7 @@ public class JobBuilderController extends BaseCloudController {
         job.setStorageBucket(user.getS3Bucket());
 
         //Iterate over all session variables - set them up as job parameters
-        @SuppressWarnings("rawtypes")
-        final
-        Enumeration sessionVariables = session.getAttributeNames();
+        final Enumeration<String> sessionVariables = session.getAttributeNames();
         Map<String, VglParameter> jobParams = new HashMap<String, VglParameter>();
         while (sessionVariables.hasMoreElements()) {
             String variableName = sessionVariables.nextElement().toString();
