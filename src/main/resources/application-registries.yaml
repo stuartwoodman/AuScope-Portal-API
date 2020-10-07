@@ -40,8 +40,8 @@ csw:
 #        recordInformationUrl: "https://geonetworkrl1.nci.org.au/geonetwork/srv/eng/catalog.search#/metadata/%1$s"
 #        title: NCI GSWA Data Portal
 #        serverType: Default
-#      - id: cswNciMt
-#        serviceUrl: https://geonetworktest.nci.org.au/geonetwork/srv/eng/csw
-#        recordInformationUrl: "https://geonetwork.nci.org.au/geonetwork/srv/eng/catalog.search#/metadata/%1$s"
-#        title: NCI MT Data Portal
-#        serverType: Default
+      #- id: cswNciMt
+      #  serviceUrl: https://geonetworktest.nci.org.au/geonetwork/srv/eng/csw
+      #  recordInformationUrl: "https://geonetwork.nci.org.au/geonetwork/srv/eng/catalog.search#/metadata/%1$s"
+      #  title: NCI MT Data Portal
+      #  serverType: Default

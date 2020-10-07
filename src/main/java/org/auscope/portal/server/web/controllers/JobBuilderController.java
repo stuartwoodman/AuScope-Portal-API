@@ -9,8 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -42,8 +40,6 @@ import org.auscope.portal.server.vegl.VEGLJobManager;
 import org.auscope.portal.server.vegl.VEGLSeries;
 import org.auscope.portal.server.vegl.VglDownload;
 import org.auscope.portal.server.vegl.VglMachineImage;
-import org.auscope.portal.server.vegl.VglParameter;
-import org.auscope.portal.server.vegl.VglParameter.ParameterType;
 import org.auscope.portal.server.web.security.ANVGLUser;
 import org.auscope.portal.server.web.service.ANVGLProvenanceService;
 import org.auscope.portal.server.web.service.ANVGLUserService;
@@ -973,36 +969,6 @@ public class JobBuilderController extends BaseCloudController {
 
         job.setComputeInstanceKey(user.getAwsKeyName());
         job.setStorageBucket(user.getS3Bucket());
-
-        //Iterate over all session variables - set them up as job parameters
-        @SuppressWarnings("rawtypes")
-        final
-        Enumeration sessionVariables = session.getAttributeNames();
-        Map<String, VglParameter> jobParams = new HashMap<String, VglParameter>();
-        while (sessionVariables.hasMoreElements()) {
-            String variableName = sessionVariables.nextElement().toString();
-            Object variableValue = session.getAttribute(variableName);
-            String variableStringValue = null;
-            ParameterType variableType = null;
-
-            //Only session variables of a number or string will be considered
-            if (variableValue instanceof Integer || variableValue instanceof Double) {
-                variableType = ParameterType.number;
-                variableStringValue = variableValue.toString();
-            } else if (variableValue instanceof String) {
-                variableType = ParameterType.string;
-                variableStringValue = (String) variableValue;
-            } else {
-                continue;//Don't bother with other types
-            }
-
-            VglParameter param = new VglParameter();
-            param.setName(variableName);
-            param.setValue(variableStringValue);
-            param.setType(variableType.name());
-            jobParams.put(variableName, param);
-        }
-        job.setJobParameters(jobParams);
 
         //Load details from
         job.setUser(user.getEmail());

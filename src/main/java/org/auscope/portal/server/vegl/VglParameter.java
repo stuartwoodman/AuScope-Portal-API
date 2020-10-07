@@ -10,8 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 
 
@@ -30,14 +32,6 @@ public class VglParameter implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -7474027234400180238L;
 
-    /**
-     * The different types of parameter types
-     * @author Josh Vote
-     */
-    public enum ParameterType {
-        string,
-        number
-    }
 
     /** The primary key for this parameter*/
     @Id
@@ -50,16 +44,16 @@ public class VglParameter implements Serializable, Cloneable {
     /** The value (as a string) of this parameter*/
     private String value;
     
-    /** The 'type' of this parameter. Can be 'number' or 'string'*/
-    private String type;
-    /** The job that owns this parameter*/
-    
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "jobId")
-    private VEGLJob parent;
-
-
+    @JoinColumn(name = "job_solutions_id")
+    private VLJobSolution jobSolution;
+    
+    @JsonInclude
+    @Transient
+    private String solution;
+    
+    
     /**
      * Default constructor
      */
@@ -70,27 +64,23 @@ public class VglParameter implements Serializable, Cloneable {
     /**
      * Default constructor
      */
-    public VglParameter(Integer id, String name) {
-        this(id, name, null, null);
+    public VglParameter(String name, String value) {
+        this(null, name, value, null);
+    }
+
+    public VglParameter(String name, String value, VLJobSolution jobSolution) {
+        this(null, name, value, jobSolution);
     }
 
     /**
      * Construct a fully populated instance
      */
-    public VglParameter(Integer id, String name, String value, String type) {
-        this(id, name, value, type, null);
-    }
-
-    /**
-     * Construct a fully populated instance
-     */
-    public VglParameter(Integer id, String name, String value, String type, VEGLJob parent) {
+    public VglParameter(Integer id, String name, String value, VLJobSolution jobSolution) {
         super();
         this.id = id;
         this.name = name;
-        this.type = type;
         this.value = value;
-        this.parent = parent;
+        this.jobSolution = jobSolution;
     }
 
     /**
@@ -142,36 +132,22 @@ public class VglParameter implements Serializable, Cloneable {
     }
 
     /**
-     * The 'type' of this parameter. Can be 'number' or 'string'
+     * The VLJobSolution that owns this parameter
+     * 
      * @return
      */
-    public String getType() {
-        return type;
+    public VLJobSolution getJobSolution() {
+        return jobSolution;
     }
-
-    /**
-     * The 'type' of this parameter. Can be 'number' or 'string'
-     * @param type
-     */
-    public void setType(String type) {
-        this.type = type;
+    
+    public void setJobSolution(VLJobSolution jobSolution) {
+        this.jobSolution = jobSolution;
     }
-
-    /**
-     * The job that owns this parameter
-     * @return
-     */
-    public VEGLJob getParent() {
-        return parent;
+    
+    public String getSolution() {
+        return jobSolution.getSolutionId();
     }
-
-    /**
-     * The job that owns this parameter
-     * @param parent
-     */
-    public void setParent(VEGLJob parent) {
-        this.parent = parent;
-    }
+    
 
     /**
      * Tests two VglJobParameter objects for equality based on job id and name
@@ -179,26 +155,19 @@ public class VglParameter implements Serializable, Cloneable {
     @Override
     public boolean equals(Object o) {
         if (o instanceof VglParameter) {
-            return this.parent.getId().equals(((VglParameter) o).parent.getId()) && this.name.equals(((VglParameter) o).name);
+            return jobSolution.getId().equals(((VglParameter) o).jobSolution.getId()) &&
+                    this.name.equals(((VglParameter) o).name) &&
+                    this.value.equals(((VglParameter) o).value);
         }
-
         return false;
-    }
-
-    /**
-     * Gets a hashcode based of the job id and name parameters;
-     */
-    @Override
-    public int hashCode() {
-        return name.hashCode() ^ parent.getId().hashCode();
     }
 
     @Override
     public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            return null;
-        }
+        VglParameter newParameter = new VglParameter();
+        newParameter.setName(name);
+        newParameter.setValue(value);
+        newParameter.setJobSolution(this.jobSolution);
+        return newParameter;
     }
 }

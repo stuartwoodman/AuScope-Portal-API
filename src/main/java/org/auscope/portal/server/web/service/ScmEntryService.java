@@ -23,7 +23,9 @@ import org.auscope.portal.core.services.csw.SearchFacet;
 import org.auscope.portal.core.services.csw.SearchFacet.Comparison;
 import org.auscope.portal.server.vegl.VEGLJob;
 import org.auscope.portal.server.vegl.VEGLJobManager;
+import org.auscope.portal.server.vegl.VLJobSolution;
 import org.auscope.portal.server.vegl.VLScmSnapshot;
+import org.auscope.portal.server.vegl.VglParameter;
 import org.auscope.portal.server.web.repositories.VLScmSnapshotRepository;
 import org.auscope.portal.server.web.security.ANVGLUser;
 import org.auscope.portal.server.web.service.scm.Dependency;
@@ -117,17 +119,34 @@ public class ScmEntryService implements ScmLoader {
 
     /**
      * Update job (jobId) with vmId and computeServiceId for solution
-     * if we have one.
-     *
-     * @param jobId String job ID
-     * @param solutionId String solution URL
-     * @param user Authenticated ANVGLUser
+     * if we have one. Solution variables are defined by from the elements of 3
+     * separate lists representing the Solution ID, the variable name and the
+     * variable value.
+     * 
+     * @param job The VLJob
+     * @param variableSolutions a List of Solution IDs
+     * @param variableNames a list of Solution variable names
+     * @param variableValues a list of Solution variable values  
+     * @param user the current user
      * @throws PortalServiceException
      */
-    public void updateJobForSolution(VEGLJob job, Set<String> solutions, ANVGLUser user)
+    public void updateJobForSolution(VEGLJob job, List<String> variableSolutions, 
+            List<String> variableNames, List<String> variableValues, ANVGLUser user)
             throws PortalServiceException {
-        // Store the solutionId in the job
-        job.setJobSolutions(solutions);
+        // Construct the VLParameters for the JobSolutions
+        HashMap<String, VLJobSolution> solutionVarMap = new HashMap<String, VLJobSolution>();
+        for(int i = 0; i < variableSolutions.size() && i < variableNames.size()
+                && i < variableValues.size(); i++) {
+            if(!solutionVarMap.containsKey(variableSolutions.get(i))) {
+                 solutionVarMap.put(variableSolutions.get(i),
+                         new VLJobSolution(job, variableSolutions.get(i)));
+            }
+            VglParameter jobParameter = new VglParameter(variableNames.get(i),
+                    variableValues.get(i), solutionVarMap.get(variableSolutions.get(i)));
+            solutionVarMap.get(variableSolutions.get(i)).addJobParameter(jobParameter);
+        }
+        Set<VLJobSolution> jobSolutions = new HashSet<VLJobSolution>(solutionVarMap.values());
+        job.setJobSolutions(jobSolutions);
 
         // Save the job
         try {
@@ -349,8 +368,8 @@ public class ScmEntryService implements ScmLoader {
         HashSet<Solution> solutions = new HashSet<>();
 
         if (job != null) {
-            for (String uri: job.getJobSolutions()) {
-                solution = getScmSolution(uri);
+            for (VLJobSolution jobSolution: job.getJobSolutions()) {
+                solution = getScmSolution(jobSolution.getSolutionId());
                 if (solution != null) {
                     solutions.add(solution);
                 }

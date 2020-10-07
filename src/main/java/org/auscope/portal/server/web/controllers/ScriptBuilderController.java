@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -97,18 +98,23 @@ public class ScriptBuilderController extends BaseCloudController {
     }
 
     /**
-     * Writes provided script text to a file in the specified jobs stage in directory
+     * Writes provided script text to a file in the specified jobs stage in directory.
+     * Solution variables are defined by from the elements of 3 separate lists
+     * representing the Solution ID, the variable name and the variable value.
      *
-     * @param jobId
-     * @param sourceText
-     * @param solution
+     * @param jobId The VLJob ID
+     * @param sourceText The source text for the script
+     * @param variableSolutions a List of Solution IDs
+     * @param variableNames a list of Solution variable names
+     * @param variableValues a list of Solution variable values  
      * @return A JSON encoded response with a success flag
      */
     @RequestMapping("/secure/saveScript.do")
     public ModelAndView saveScript(@RequestParam("jobId") String jobId,
                                    @RequestParam("sourceText") String sourceText,
-                                   @RequestParam("solutions") Set<String> solutions/*,
-                                   @AuthenticationPrincipal ANVGLUser user*/) {
+                                   @RequestParam("variableSolutions") List<String> variableSolutions,
+                                   @RequestParam("variableNames") List<String> variableNames,
+                                   @RequestParam("variableValues") List<String> variableValues) {
     	ANVGLUser user = userService.getLoggedInUser();
         if (sourceText == null || sourceText.trim().isEmpty()) {
             return generateJSONResponseMAV(false, null, "No source text specified");
@@ -129,11 +135,12 @@ public class ScriptBuilderController extends BaseCloudController {
 
         // Update job with vmId for solution if we have one.
         try {
-            scmEntryService.updateJobForSolution(job, solutions, user);
+            scmEntryService.updateJobForSolution(job, variableSolutions, variableNames, variableValues, user);
         }
         catch (PortalServiceException e) {
+            Set<String> uniqueSolutions = new HashSet<String>(variableSolutions);
             logger.warn("Failed to update job (" + jobId + ") for solutions (" +
-                        solutions + "): " + e.getMessage());
+                        uniqueSolutions + "): " + e.getMessage());
             logger.debug("error: ", e);
             return generateJSONResponseMAV(false, null, "Unable to write script file");
         }

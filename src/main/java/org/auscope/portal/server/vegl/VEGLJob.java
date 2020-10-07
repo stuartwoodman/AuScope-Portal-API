@@ -21,7 +21,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -29,7 +28,9 @@ import javax.persistence.Transient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.auscope.portal.core.cloud.CloudJob;
-import org.auscope.portal.server.vegl.VglParameter.ParameterType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * A specialisation of a generic cloud job for the VEGL Portal
@@ -68,12 +69,17 @@ public class VEGLJob extends CloudJob implements Cloneable {
     private Date executeDate;
 
     /** A map of VglParameter objects keyed by their parameter names*/
-    @OneToMany(mappedBy = "parent", fetch=FetchType.EAGER, cascade=CascadeType.ALL, orphanRemoval=true)
-    @MapKey(name="name")
-    private Map<String, VglParameter> jobParameters;
+    @JsonIgnore
+    @OneToMany(mappedBy = "job", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
+    private Set<VLJobSolution> jobSolutions;
+    
+    /** Set of job solution values, these are propagated from the VLJobSolution objects **/
+    @JsonInclude
+    @Transient
+    private Set<VglParameter> jobParameters;
     
     /** A list of VglDownload objects associated with this job*/
-    @OneToMany(mappedBy="parent", fetch=FetchType.EAGER, cascade=CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(mappedBy="parent", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
     private List<VglDownload> jobDownloads;
 
     /** A list of FileInformation objects associated with this job*/
@@ -85,7 +91,18 @@ public class VEGLJob extends CloudJob implements Cloneable {
     @ElementCollection
     @CollectionTable(name="job_solutions", joinColumns=@JoinColumn(name="job_id"))
     @Column(name="solution_id")
-    private Set<String> jobSolutions;
+    private Set<String> solutionIds;
+    
+    public Set<String> getSolutionIds() {
+        return solutionIds;
+    }
+    public void setSolutionIds(Set<String> solutionIds) {
+        this.solutionIds = solutionIds;
+    }
+    
+    public void addSolutionId(String solutionId) {
+        this.solutionIds.add(solutionId);
+    }
 
     /**
      * A set of annotations associated with this job.
@@ -130,26 +147,14 @@ public class VEGLJob extends CloudJob implements Cloneable {
     protected String storageServiceId;
 
     transient protected Map<String, String> properties = new HashMap<String, String>();
+
     
-    
-    
-
-    public boolean isContainsPersistentVolumes() {
-        return containsPersistentVolumes;
-    }
-
-
-    public void setContainsPersistentVolumes(boolean containsPersistentVolumes) {
-        this.containsPersistentVolumes = containsPersistentVolumes;
-    }
-
     /**
      * Creates an unitialised VEGLJob
      */
     public VEGLJob() {
         super();
     }
-
 
     /**
      * 
@@ -158,14 +163,12 @@ public class VEGLJob extends CloudJob implements Cloneable {
 		return id;
 	}
 
-
     /**
      * 
      */
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
 
 	/**
      * Sets the processTimeLog
@@ -232,59 +235,6 @@ public class VEGLJob extends CloudJob implements Cloneable {
     }
 
     /**
-     * A set of VglJobParameter objects
-     * @return
-     */
-    public Map<String, VglParameter> getJobParameters() {
-        return (jobParameters != null) ? jobParameters : new HashMap<String, VglParameter>();
-    }
-
-    /** A set of VglJobParameter objects*/
-    public void setJobParameters(Map<String, VglParameter> jobParameters) {
-    	if(this.jobParameters == null) {
-    		this.jobParameters = jobParameters;
-    	} else {
-	    	this.jobParameters.clear();
-	    	if(jobParameters != null) {
-	    		for (String key : jobParameters.keySet()) {
-		            jobParameters.get(key).setParent(this);
-		            this.jobParameters.put(key, jobParameters.get(key));
-		        }
-	    	}
-    	}
-    }
-
-    /**
-     * Sets a single parameter within this job
-     * @param name The name of the parameter (parameters with the same name will be overwritten)
-     * @param value The value of the parameter
-     * @param type The type of the parameter ('number' or 'string')
-     */
-    public void setJobParameter(String name, String value, ParameterType type) {
-        VglParameter param = jobParameters.get(name);
-        if (param == null) {
-            param = new VglParameter();
-        }
-
-        param.setParent(this);
-        param.setName(name);
-        param.setValue(value);
-        param.setType(type.name());
-
-        jobParameters.put(name, param);
-    }
-
-    /**
-     * Gets the VglParameter with a particular name
-     * @param key
-     * @return
-     */
-    public VglParameter getJobParameter(String key) {
-        return this.jobParameters.get(key);
-    }
-
-
-    /**
      * A list of VglDownload objects associated with this job
      * @return
      */
@@ -309,31 +259,12 @@ public class VEGLJob extends CloudJob implements Cloneable {
         }
     }
 
-    public Set<String> getJobSolutions() {
-        return (jobSolutions != null) ? jobSolutions : new HashSet<String>();
-    }
-
-    public void addJobSolution(String solutionId) {
-        this.jobSolutions.add(solutionId);
-    }
-
-    public void setJobSolutions(Set<String> solutions) {
-    	if(this.jobSolutions == null) {
-    		this.jobSolutions = solutions;
-    	} else {
-	        this.jobSolutions.clear();
-	        if(solutions != null) {
-	        	this.jobSolutions.addAll(solutions);
-	        }
-    	}
-    }
-
     public Set<String> getAnnotations() {
         return (annotations != null) ? annotations : new HashSet<String>();
     }
 
     public void setAnnotations(Collection<String> annotations) {
-        if (this.annotations == null) {
+        if(this.annotations == null) {
             this.annotations = new HashSet<String>();
         } else {
             this.annotations.clear();
@@ -341,7 +272,45 @@ public class VEGLJob extends CloudJob implements Cloneable {
 
         this.annotations.addAll(annotations);
     }
-
+    
+    public Set<VLJobSolution> getJobSolutions() {
+        return (jobSolutions != null) ? jobSolutions : new HashSet<VLJobSolution>();
+    }
+    
+    public void setJobSolutions(Set<VLJobSolution> jobSolutions) {
+        if(this.jobSolutions == null) {
+            this.jobSolutions = new HashSet<VLJobSolution>();
+        } 
+        this.jobSolutions.clear();
+        if (jobSolutions != null) {
+            for (VLJobSolution js: jobSolutions) {
+                js.setJob(this);
+                this.jobSolutions.add(js);
+            }
+        }
+    }
+    
+    public void addJobSolution(VLJobSolution jobSolution) {
+        if(this.jobSolutions == null) {
+            this.jobSolutions = new HashSet<VLJobSolution>();
+        }
+        jobSolutions.add(jobSolution);
+    }
+    
+    public Set<VglParameter> getJobParameters() {
+        HashSet<VglParameter> jobParameters = new HashSet<VglParameter>();
+        if(jobSolutions != null) {
+            for (VLJobSolution solution: jobSolutions) {
+                if(solution.getJobParameters() != null) {
+                    for(VglParameter parameter: solution.getJobParameters()) {
+                        jobParameters.add(parameter);
+                    }
+                }
+            }
+        }
+        return jobParameters;
+    }
+    
     /**
      * Similar to clone but ensures compatibility with hibernate. No IDs or references (except for immutable ones)
      * will be shared by the clone and this object.
@@ -379,21 +348,18 @@ public class VEGLJob extends CloudJob implements Cloneable {
         }
         newJob.setJobDownloads(newDownloads);
 
-        Map<String, VglParameter> newParams = new HashMap<>();
-        if(this.jobParameters != null) { 
-	        for (String key : this.jobParameters.keySet()) {
-	            VglParameter paramClone = (VglParameter)this.jobParameters.get(key).clone();
-	            paramClone.setId(null);
-	            newParams.put(key, paramClone);
-	        }
-        }
-        newJob.setJobParameters(newParams);
-
         for (String key : properties.keySet()) {
             newJob.setProperty(key, getProperty(key));
         }
 
-        newJob.setJobSolutions(new HashSet<>(this.getJobSolutions()));
+        newJob.setSolutionIds(new HashSet<>(this.getSolutionIds()));
+        
+        // JobSolutionObjects (containing parameters)
+        Set<VLJobSolution> newJobSolutionObjects = new HashSet<VLJobSolution>();
+        for(VLJobSolution solution: jobSolutions) {
+            newJobSolutionObjects.add((VLJobSolution)solution.clone());
+        }
+        newJob.setJobSolutions(newJobSolutionObjects);
 
         return newJob;
     }
@@ -432,6 +398,14 @@ public class VEGLJob extends CloudJob implements Cloneable {
      */
     public void setWalltime(Integer walltime) {
         this.walltime = walltime;
+    }
+    
+    public boolean isContainsPersistentVolumes() {
+        return containsPersistentVolumes;
+    }
+
+    public void setContainsPersistentVolumes(boolean containsPersistentVolumes) {
+        this.containsPersistentVolumes = containsPersistentVolumes;
     }
 
     /**
