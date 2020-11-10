@@ -86,11 +86,13 @@ CREATE TABLE `authorities` (
      ON DELETE CASCADE
 );
 
-CREATE TABLE job_solutions (
-    job_id int(11) NOT NULL,
-    solution_id varchar(255) NOT NULL,
-    FOREIGN KEY (`job_id`)
-        REFERENCES jobs(`id`)
+CREATE TABLE `job_solutions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_id` int(11) NOT NULL,
+  `solution_id` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY `job_id` (`job_id`)
+        REFERENCES `jobs` (`id`)
         ON DELETE CASCADE
 );
 
@@ -126,15 +128,13 @@ CREATE TABLE `jobs_audit_log` (
 
 CREATE TABLE `parameters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `jobId` int(11) NOT NULL,
+  `job_solutions_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `value` varchar(4096) DEFAULT NULL,
-  `type` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY `jobId_parameters` (`jobId`)
-        REFERENCES jobs(`id`)
-        ON DELETE CASCADE,
-  KEY `jobIdName` (`jobId`,`name`)
+  FOREIGN KEY `jobSolutionsId_parameters` (`job_solutions_id`)
+        REFERENCES job_solutions(`id`)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE `nci_details` (
