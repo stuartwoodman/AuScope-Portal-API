@@ -119,7 +119,7 @@ public class ScmEntryService implements ScmLoader {
 
     /**
      * Update job (jobId) with vmId and computeServiceId for solution
-     * if we have one. Solution variables are defined by from the elements of 3
+     * if we have one. Solution variables are defined from the elements of 3
      * separate lists representing the Solution ID, the variable name and the
      * variable value.
      * 

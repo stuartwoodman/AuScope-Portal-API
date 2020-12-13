@@ -1,9 +1,9 @@
 package org.auscope.portal.server.web.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.auscope.portal.core.services.PortalServiceException;
 import org.auscope.portal.core.services.cloud.CloudComputeService;
@@ -65,16 +65,20 @@ public class TestScriptBuilderController extends PortalTestClass {
     public void testSaveScript() throws Exception {
         String jobId = "1";
         String sourceText = "print 'test'";
-        Set<String> solutions = new HashSet<>();
+        List<String> solutions = new ArrayList<String>();
         solutions.add("http://vhirl-dev.csiro.au/scm/solutions/1");
+        List<String> varNames = new ArrayList<String>();
+        varNames.add("VariableOne");
+        List<String> varValues = new ArrayList<String>();
+        varValues.add("VariableOneValue");
 
         context.checking(new Expectations() {{
             oneOf(mockJobManager).getJobById(Integer.parseInt(jobId), user);will(returnValue(mockJob));
             oneOf(mockSbService).saveScript(mockJob, sourceText, user);
-            oneOf(mockScmEntryService).updateJobForSolution(mockJob, solutions, user);
+            oneOf(mockScmEntryService).updateJobForSolution(mockJob, solutions, varNames, varValues, user);
         }});
 
-        ModelAndView mav = controller.saveScript(jobId, sourceText, solutions);
+        ModelAndView mav = controller.saveScript(jobId, sourceText, solutions, varNames, varValues);
         Assert.assertTrue((Boolean)mav.getModel().get("success"));
     }
 
@@ -85,10 +89,14 @@ public class TestScriptBuilderController extends PortalTestClass {
     public void testSaveScript_EmptySourceText() {
         String jobId = "1";
         String sourceText = "";
-        Set<String> solutions = new HashSet<>();
+        List<String> solutions = new ArrayList<String>();
         solutions.add("http://vhirl-dev.csiro.au/scm/solutions/1");
+        List<String> varNames = new ArrayList<String>();
+        varNames.add("VariableOne");
+        List<String> varValues = new ArrayList<String>();
+        varValues.add("VariableOneValue");
 
-        ModelAndView mav = controller.saveScript(jobId, sourceText, solutions);
+        ModelAndView mav = controller.saveScript(jobId, sourceText, solutions, varNames, varValues);
         Assert.assertFalse((Boolean)mav.getModel().get("success"));
     }
 
@@ -101,8 +109,12 @@ public class TestScriptBuilderController extends PortalTestClass {
     public void testSaveScript_Exception() throws Exception {
         String jobId = "1";
         String sourceText = "print 'test'";
-        Set<String> solutions = new HashSet<>();
+        List<String> solutions = new ArrayList<String>();
         solutions.add("http://vhirl-dev.csiro.au/scm/solutions/1");
+        List<String> varNames = new ArrayList<String>();
+        varNames.add("VariableOne");
+        List<String> varValues = new ArrayList<String>();
+        varValues.add("VariableOneValue");
 
         context.checking(new Expectations() {{
             oneOf(mockJobManager).getJobById(Integer.parseInt(jobId), user);will(returnValue(mockJob));
@@ -110,7 +122,7 @@ public class TestScriptBuilderController extends PortalTestClass {
             will(throwException(new PortalServiceException("")));
         }});
 
-        ModelAndView mav = controller.saveScript(jobId, sourceText, solutions);
+        ModelAndView mav = controller.saveScript(jobId, sourceText, solutions, varNames, varValues);
         Assert.assertFalse((Boolean)mav.getModel().get("success"));
     }
 

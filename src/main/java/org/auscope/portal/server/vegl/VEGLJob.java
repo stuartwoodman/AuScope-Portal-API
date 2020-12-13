@@ -280,13 +280,34 @@ public class VEGLJob extends CloudJob implements Cloneable {
     public void setJobSolutions(Set<VLJobSolution> jobSolutions) {
         if(this.jobSolutions == null) {
             this.jobSolutions = new HashSet<VLJobSolution>();
-        } 
-        this.jobSolutions.clear();
+        }
+        // The VGLParameters of a JobSolutions are now persisted, so instead
+        // of just clearing the JobSolutions, clone it and add new parameters
+        // while updating existing ones
         if (jobSolutions != null) {
+            Set<VLJobSolution> newSolutions = new HashSet<VLJobSolution>();
             for (VLJobSolution js: jobSolutions) {
-                js.setJob(this);
-                this.jobSolutions.add(js);
+                // If solution exists, retrieve that one to maintain ID,
+                // otherwise use the new one passed in
+                VLJobSolution existingSolution = this.jobSolutions.stream().filter(solution -> js.getSolutionId().equals(solution.getSolutionId())).findFirst().orElse(js);
+                Set<VglParameter> newParameters = new HashSet<VglParameter>();
+                for(VglParameter parameter: js.getJobParameters()) {
+                    // Get the existing job parameter (if it exists), or use the one passed
+                    VglParameter existingParameter = existingSolution.getJobParameters().stream().filter(p -> parameter.getName().equals(p.getName())).findFirst().orElse(parameter);
+                    existingParameter.setValue(parameter.getValue());
+                    existingParameter.setJobSolution(existingSolution);
+                    newParameters.add(existingParameter);
+                }
+                existingSolution.setJobParameters(newParameters);
+                existingSolution.setJob(this);
+                newSolutions.add(existingSolution);
             }
+            this.jobSolutions.clear();
+            for(VLJobSolution s: newSolutions) {
+                this.jobSolutions.add(s);
+            }
+        } else {
+            this.jobSolutions.clear();
         }
     }
     
