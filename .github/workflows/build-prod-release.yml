@@ -11,8 +11,11 @@ on:
       pc-buildtag:
         description: 'portal-core build tag: (format: vX.Y.Z)'
         required: true
+      build-image-name:
+        description: 'Build image name:'
+        required: true
 env:
-  IMAGE_NAME: auscope-portal-api-prod-release  
+  IMAGE_NAME: ${{ github.event.inputs.build-image-name }}
 
 jobs:
   # Push image to GitHub Packages.
