@@ -36,7 +36,7 @@ import org.json.JSONArray;
 */
 public class LayerFactory {
 
-    /* Used for ogging exceptions */
+    /* Used for logging exceptions */
     private final Log log = LogFactory.getLog(getClass());
 
     private boolean layersLoaded = false;
@@ -246,9 +246,6 @@ public class LayerFactory {
                     ((Map<String, Object>) yamlLayers.get(k)).forEach((k1, v1) -> {
                         String value = v1.toString();
                         switch (k1) {
-                        case "group":
-                            layer.setGroup(value);
-                            break;
                         case "name":
                             layer.setName(value);
                             break;
@@ -283,9 +280,6 @@ public class LayerFactory {
                             setupIcon(layer);
                             break;
                         }
-                        case "order":
-                            layer.setOrder(value);
-                            break;
                         case "legendImg":
                         	layer.setLegendImg(value);
                         	break;

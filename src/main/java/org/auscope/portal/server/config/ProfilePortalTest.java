@@ -4,11 +4,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.yaml.snakeyaml.Yaml;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.auscope.portal.core.view.knownlayer.KnownLayer;
 
 
@@ -19,38 +21,40 @@ import org.auscope.portal.core.view.knownlayer.KnownLayer;
 @Configuration
 @Profile("test")
 public class ProfilePortalTest {
-
+	
+	private final Log log = LogFactory.getLog(getClass());
+	
+	@Value("${layersFile:layers.yaml}")
+    private String layersFile;
     private boolean layersLoaded = false;
-
-    Map<String, Object> yamlLayers;
     
-    public KnownLayer knownType(String id) {
-        
-        LayerFactory lf = new LayerFactory(yamlLayers, layersLoaded);
+    public KnownLayer knownType(Map<String, Object> yamlLayer, String id) {
+        LayerFactory lf = new LayerFactory(yamlLayer, layersLoaded);
         KnownLayer layer = lf.annotateLayer(id);
-
         return layer;
     }
 
-    @Bean
+    @SuppressWarnings("unchecked")
+	@Bean
     public ArrayList<KnownLayer> knownTypes() {
         ArrayList<KnownLayer> knownLayers = new ArrayList<KnownLayer>();
-
         layersLoaded = true;
         Yaml yaml = new Yaml();
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("layers.yaml");
-        yamlLayers = yaml.load(inputStream);
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(layersFile);
+        Map<String, Object> yamlMenuAndLayers = yaml.load(inputStream);
 
-        int[] counter = new int[1];
-        yamlLayers.forEach((k, v) -> {
-            counter[0]++;
-            String id = k.toString();
-            //if (counter[0] <= 181) { // 180
-            //System.out.println(counter[0] + ", Key = " + id + ", Value = " + v);
-            KnownLayer l =  knownType(id);
-            if (!l.isHidden()) knownLayers.add(knownType(id));
-        });
-
+        if (yamlMenuAndLayers.containsKey("layers")) {
+        	ArrayList<Map<String, Object>> yamlLayers = (ArrayList<Map<String, Object>>)yamlMenuAndLayers.get("layers");
+        	for (Map<String, Object> yamlLayer: yamlLayers) {
+        		yamlLayer.forEach((k, v) -> {
+                    String id = k.toString();
+                    KnownLayer l =  knownType(yamlLayer, id);
+                    if (!l.isHidden()) knownLayers.add(l);
+                });
+        	}
+        } else {
+        	log.error("Unable to locate \"layers\" in " + layersFile);
+        }        
         return knownLayers;
     }
 

@@ -61,6 +61,7 @@ import org.auscope.portal.core.view.ViewCSWRecordFactory;
 import org.auscope.portal.core.view.ViewGetCapabilitiesFactory;
 import org.auscope.portal.core.view.ViewKnownLayerFactory;
 import org.auscope.portal.core.view.knownlayer.KnownLayer;
+import org.auscope.portal.core.view.knownlayer.KnownLayerMenu;
 import org.auscope.portal.core.xslt.GmlToHtml;
 import org.auscope.portal.core.xslt.WfsToKmlTransformer;
 import org.auscope.portal.mscl.MSCLWFSService;
@@ -186,6 +187,9 @@ public class AppContext {
 
     @Autowired
     private ArrayList<KnownLayer> knownTypes;
+    
+    @Autowired
+    private List<KnownLayerMenu> knownLayerMenus;
     
     @Bean
     public MailSender mailSender() {
