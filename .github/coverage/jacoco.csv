@@ -355,8 +355,8 @@ AuScope-Portal-API,org.auscope.portal.core.services.responses.wmts,GetCapabiliti
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWGetDomainResponse.CSWGetCapabilitiesNamespace,0,9,0,0,0,3,0,1,0,1
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWOnlineResourceFactory,3,109,2,4,1,28,3,3,1,2
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWTemporalExtent,26,0,0,0,11,0,6,0,6,0
-AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWGetCapabilities.CSWGetCapabilitiesNamespace,0,15,0,0,0,4,0,1,0,1
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWGetRecordResponse,0,160,3,5,0,36,3,7,0,6
+AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWGetCapabilities.CSWGetCapabilitiesNamespace,0,15,0,0,0,4,0,1,0,1
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWRecordTransformer.Scope,0,15,0,0,0,2,0,1,0,1
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWGeographicBoundingBox,80,354,8,54,18,60,12,38,4,15
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWGetDomainResponse,8,74,0,2,2,19,0,6,0,5
