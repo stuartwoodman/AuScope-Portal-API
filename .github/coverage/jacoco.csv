@@ -53,12 +53,12 @@ AuScope-Portal-API,org.auscope.portal.core.services.methodmakers.filter,Abstract
 AuScope-Portal-API,org.auscope.portal.core.exceptions,InitializationException,16,0,0,0,8,0,4,0,4,0
 AuScope-Portal-API,org.auscope.portal.server.config,LayerFactory.mandRec,13,0,0,0,3,0,1,0,1,0
 AuScope-Portal-API,org.auscope.portal.server.config,AppContext.new Runnable() {...},22,0,4,0,4,0,4,0,2,0
-AuScope-Portal-API,org.auscope.portal.server.config,ElasticsearchConfig,65,0,2,0,18,0,4,0,3,0
+AuScope-Portal-API,org.auscope.portal.server.config,ElasticsearchConfig,61,0,2,0,17,0,4,0,3,0
 AuScope-Portal-API,org.auscope.portal.server.config,LayerChecksumService,10,0,0,0,4,0,3,0,3,0
 AuScope-Portal-API,org.auscope.portal.server.config,AuscopeRegistries,18,0,0,0,6,0,4,0,4,0
 AuScope-Portal-API,org.auscope.portal.server.config,ConversionConfig,29,0,0,0,9,0,3,0,3,0
 AuScope-Portal-API,org.auscope.portal.server.config,AbstractBasePortalProfile,172,0,16,0,38,0,11,0,3,0
-AuScope-Portal-API,org.auscope.portal.server.config,AppContext,758,0,16,0,151,0,57,0,49,0
+AuScope-Portal-API,org.auscope.portal.server.config,AppContext,739,0,16,0,150,0,56,0,48,0
 AuScope-Portal-API,org.auscope.portal.server.config,ExtraVocabularies,111,0,0,0,13,0,13,0,13,0
 AuScope-Portal-API,org.auscope.portal.server.config,LayerFactory,1941,0,178,0,469,0,148,0,44,0
 AuScope-Portal-API,org.auscope.portal.server.config,LayerFactory.wfsRec,13,0,0,0,3,0,1,0,1,0
@@ -229,7 +229,7 @@ AuScope-Portal-API,org.auscope.portal.server.web.security,PortalOAuth2UserInfoFa
 AuScope-Portal-API,org.auscope.portal.server.web.security,PortalSecurityConfig.new AuthenticationFailureHandler() {...},9,0,0,0,3,0,2,0,2,0
 AuScope-Portal-API,org.auscope.portal.server.web.security,PortalUserPrincipal,74,0,0,0,28,0,15,0,15,0
 AuScope-Portal-API,org.auscope.portal.server.web.security,PortalOAuth2UserService,158,0,8,0,35,0,9,0,5,0
-AuScope-Portal-API,org.auscope.portal.server.web.security,PortalSecurityConfig,197,0,0,0,37,0,14,0,14,0
+AuScope-Portal-API,org.auscope.portal.server.web.security,PortalSecurityConfig,196,0,0,0,37,0,14,0,14,0
 AuScope-Portal-API,org.auscope.portal.server.web.security,PortalUser.AuthenticationFramework,21,0,0,0,1,0,1,0,1,0
 AuScope-Portal-API,org.auscope.portal.server.web.security,PortalOAuth2UserInfo,9,0,0,0,4,0,2,0,2,0
 AuScope-Portal-API,org.auscope.portal.core.services.responses.wcs,SimpleTimePeriod,51,0,0,0,12,0,4,0,4,0
@@ -365,8 +365,8 @@ AuScope-Portal-API,org.auscope.portal.core.services.responses.wmts,GetCapabiliti
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWGetDomainResponse.CSWGetCapabilitiesNamespace,0,9,0,0,0,3,0,1,0,1
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWOnlineResourceFactory,3,109,2,4,1,28,3,3,1,2
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWTemporalExtent,26,0,0,0,11,0,6,0,6,0
-AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWGetRecordResponse,0,160,3,5,0,36,3,7,0,6
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWGetCapabilities.CSWGetCapabilitiesNamespace,0,15,0,0,0,4,0,1,0,1
+AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWGetRecordResponse,0,160,3,5,0,36,3,7,0,6
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWRecordTransformer.Scope,0,15,0,0,0,2,0,1,0,1
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWGeographicBoundingBox,80,354,8,54,18,60,12,38,4,15
 AuScope-Portal-API,org.auscope.portal.core.services.responses.csw,CSWGetDomainResponse,8,74,0,2,2,19,0,6,0,5
@@ -403,9 +403,9 @@ AuScope-Portal-API,org.auscope.portal.core.util.structure,RDFTriple,0,27,0,0,0,1
 AuScope-Portal-API,org.auscope.portal.server.web.security.aaf,JWTManagement,222,0,24,0,46,0,18,0,6,0
 AuScope-Portal-API,org.auscope.portal.server.web.security.aaf,AAFAuthentication,141,0,18,0,32,0,21,0,12,0
 AuScope-Portal-API,org.auscope.portal.server.web.security.aaf,UnixTimestampDeserializer,28,0,0,0,7,0,2,0,2,0
-AuScope-Portal-API,org.auscope.portal.server.web.security.aaf,AAFAuthenticationToken,29,0,2,0,12,0,6,0,5,0
+AuScope-Portal-API,org.auscope.portal.server.web.security.aaf,AAFAuthenticationToken,30,0,2,0,12,0,6,0,5,0
 AuScope-Portal-API,org.auscope.portal.server.web.security.aaf,AAFAuthenticationRedirect,7,0,0,0,2,0,2,0,2,0
-AuScope-Portal-API,org.auscope.portal.server.web.security.aaf,AAFAuthenticationFilter,39,0,4,0,9,0,4,0,2,0
+AuScope-Portal-API,org.auscope.portal.server.web.security.aaf,AAFAuthenticationFilter,38,0,4,0,9,0,4,0,2,0
 AuScope-Portal-API,org.auscope.portal.server.web.security.aaf,AAFAuthenticationSuccessHandler,9,0,0,0,3,0,2,0,2,0
 AuScope-Portal-API,org.auscope.portal.server.web.security.aaf,AAFAttributes,359,0,88,0,41,0,56,0,12,0
 AuScope-Portal-API,org.auscope.portal.server.web.security.aaf,AAFJWT,20,0,0,0,3,0,2,0,2,0
